@@ -50,8 +50,13 @@ def button(update, context):
     path="https://github.com/timothylam1228/telegram_bot/raw/master/source/"
     file=str(query.data)
     pdf=".pdf"
+    jpg=".jpg"
     context.bot.sendDocument(chat_id=query.message.chat.id, document=path+file+pdf)
-    if()
+    if(file=="Maths Diagnostic Test"):
+        context.bot.sendPhoto(chat_id=query.message.chat.id, photo='https://github.com/timothylam1228/telegram_bot/raw/master/source/maths_diagonositc_test_changed.jpg')
+        context.bot.sendMessage(chat_id=query.message.chat.id,text =" Q7.6 has update Please be careful")
+
+
 
 def question(update, context):
     if(update.message.text)== 'Question':
@@ -70,13 +75,17 @@ def cancel(update, context):
 
 def echo(update, context):
     """Echo the user message."""
-    if((update.message.text).lower() == 'dllm'):
+    x = update.message.from_user.id
+    if(x == 197183803):
+      update.message.reply_text(chat_id=update.message.chat.id, text = "dllm")
+    # if((update.message.text).lower() == 'dllm'):
+        
         #context.bot.delete_message(update.message.message_id,update.message)
-        context.bot.deleteMessage(chat_id=update.message.chat.id, message_id=update.message.message_id)
-        global TEMP
-        TEMP = TEMP + 1
-        if(TEMP%5==0):
-            context.bot.sendMessage(chat_id=update.message.chat.id,text =  str(update.message.from_user.first_name) + ' Dont say dllm plz, you speaked '+str(TEMP)+' times ' )
+        # context.bot.deleteMessage(chat_id=update.message.chat.id, message_id=update.message.message_id)
+        # global TEMP
+        # TEMP = TEMP + 1
+        # if(TEMP%5==0):
+        #     context.bot.sendMessage(chat_id=update.message.chat.id,text =  str(update.message.from_user.first_name) + ' Dont say dllm plz, you speaked '+str(TEMP)+' times ' )
 
 def source(update, context):
     keyboard = [
@@ -84,10 +93,10 @@ def source(update, context):
                  InlineKeyboardButton("Calculus and Linear Final Review", callback_data='Calculus and Linear Final Review')],
                 [InlineKeyboardButton("Calculus review", callback_data='Calculus review'),
                  InlineKeyboardButton("Calculus_Ch1_exercise", callback_data='Calculus_Ch1_exercise')],
-                  [InlineKeyboardButton("Maths Diagnostic Test.pdf", callback_data='Maths Diagnostic Test.pdf'),
+                  [InlineKeyboardButton("Maths Diagnostic Test", callback_data='Maths Diagnostic Test'),
                  InlineKeyboardButton("Module 1 and 2 exercise", callback_data='Module 1 and 2 exercise')],
                   [InlineKeyboardButton("Stat", callback_data='Stat'),
-                 InlineKeyboardButton("Programming Final Reminder", callback_data='Programming Final Reminder.pdf')],
+                 InlineKeyboardButton("Programming Final Reminder", callback_data='Programming Final Reminder')],
                   [InlineKeyboardButton("Applied Computing", callback_data='Applied Computing'),
                  InlineKeyboardButton("CCT", callback_data='CCT')],
                 ]
@@ -111,13 +120,15 @@ def newmember(update, context):
 
 def open_bot(update, context):
     
+    x = update.message.from_user.id
+    print(x)
     bot = context.bot
     url = helpers.create_deep_linked_url(bot.get_me().username, SO_COOL)
     keyboard = InlineKeyboardMarkup.from_button(
         InlineKeyboardButton(text='Private Chat with bot here!', url=url)
     )
-    context.bot.sendMessage(chat_id=update.message.chat.id,text ="        Hello",reply_markup=keyboard)
-    
+    #context.bot.sendMessage(chat_id=update.message.chat.id,text ="        Hello",reply_markup=keyboard)
+    update.message.reply_text("Hello", reply_markup=keyboard)
 
 def main():
     global update_id
@@ -136,7 +147,7 @@ def main():
     dp.add_handler(CommandHandler("open_bot", open_bot,filters=Filters.group))
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
     # on noncommand i.e message - echo the message on Telegram
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dp.add_handler(MessageHandler(Filters.text & ~Filters.command &Filters.sticker, echo))
     dp.add_handler(CommandHandler("Source", source,filters=~Filters.group))
     dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, newmember))
     # Start the Bot
