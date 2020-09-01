@@ -70,13 +70,7 @@ def cancel(update, context):
 def echo(update, context):
     """Echo the user message."""
     
-    # update.message.reply_text(update.message.text)
-    if((update.message.text).lower()  == 'girl'):
-        update.message.reply_text('Fake girl detected')
-        #bot.send_audio(chat_id=chat_id, audio=open('tests/test.mp3', 'rb'))
-    elif((update.message.text).lower() == 'boy'):
-        update.message.reply_text('Gay not allow here sorry')
-    elif((update.message.text).lower() == 'dllm'):
+    if((update.message.text).lower() == 'dllm'):
         #context.bot.delete_message(update.message.message_id,update.message)
         context.bot.deleteMessage(chat_id=update.message.chat.id, message_id=update.message.message_id)
         global TEMP
