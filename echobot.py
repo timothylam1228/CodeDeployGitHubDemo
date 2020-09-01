@@ -80,7 +80,7 @@ def echo(update, context):
 
 def source(update, context):
     keyboard = [[InlineKeyboardButton("CCT", callback_data='CCT'),
-                 InlineKeyboardButton("Linear", callback_data='2')],
+                 InlineKeyboardButton("Diagnostic Test", callback_data='Diagnostic Test')],
 
                 [InlineKeyboardButton("Calculus review", callback_data='Calculus review')]]
 
