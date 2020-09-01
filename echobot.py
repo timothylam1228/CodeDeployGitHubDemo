@@ -15,7 +15,7 @@ bot.
 import logging
 import random
 import telegram
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 from telegram import InlineQuery , ReplyKeyboardMarkup, ReplyKeyboardRemove, MessageEntity, ForceReply, InlineKeyboardButton,InlineKeyboardMarkup
 from telegram.utils import helpers
 
@@ -33,18 +33,25 @@ TEMP = 0
 # context. Error handlers also receive the raised TelegramError object in error.
 def start(update, context):
     """Send a message when the command /start is issued."""
-    update.message.reply_text('Testing')
+    update.message.reply_text('/source for Geting the source')
 
 
 def help_command(update, context):
+    return 
+    
+   
+def button(update, context):
+    query = update.callback_query
 
-    """Send a message when the command /help is issued."""
-    reply_keyboard = [['Source','Question']]
-    update.message.reply_text(
-        'What can i help u?',
-        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
-    return REQUEST
+    # CallbackQueries need to be answered, even if no notification to the user is needed
+    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
+    query.answer()
 
+    query.edit_message_text(text="Selected option: {}".format(query.data))
+    if(query.data=='CCT'):
+        file="source/CCT.pdf"
+    # # send the pdf doc
+        context.bot.sendDocument(chat_id=query.message.chat.id, document=open(file, 'rb'))
 
 def question(update, context):
     if(update.message.text)== 'Question':
@@ -76,9 +83,20 @@ def echo(update, context):
         global TEMP
         TEMP = TEMP + 1
         if(TEMP%5==0):
-            context.bot.sendMessage(chat_id=update.message.chat.id,text = 'Dont say dllm plz, you speaked '+str(TEMP)+' times ' + str(update.message.from_user.username))
+            context.bot.sendMessage(chat_id=update.message.chat.id,text =  str(update.message.from_user.first_name) + ' Dont say dllm plz, you speaked '+str(TEMP)+' times ' )
 
+def source(update, context):
+    keyboard = [[InlineKeyboardButton("CCT", callback_data='CCT'),
+                 InlineKeyboardButton("Linear", callback_data='2')],
 
+                [InlineKeyboardButton("Option 3", callback_data='3')]]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    update.message.reply_text('Please choose:', reply_markup=reply_markup)
+    # file="source/CCT.pdf"
+    # # send the pdf doc
+    # bot.sendDocument(chat_id=update.message.chat.id, document=open(file, 'rb'))
       
     
 def newmember(update, context):
@@ -91,9 +109,11 @@ def newmember(update, context):
     )
     update.message.reply_text(text, reply_markup=keyboard)
     
+
+
+
 def main():
     global update_id
-    
     
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
@@ -104,25 +124,13 @@ def main():
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
-
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start,filters=~Filters.group))
-    
-    '''
-    conv_handler = ConversationHandler(
-        entry_points=[CommandHandler('help', help_command)],
-
-        states={
-            REQUEST: [MessageHandler(Filters.regex('^(Source|Question)$'), question)]
-            
-        },
-        fallbacks=[CommandHandler('cancel', cancel)]
-    )
-
-    dp.add_handler(conv_handler)
-    '''
+    dp.add_handler(CommandHandler("help",help_command))
+    updater.dispatcher.add_handler(CallbackQueryHandler(button))
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dp.add_handler(CommandHandler("Source", source,filters=~Filters.group))
     dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, newmember))
     # Start the Bot
     updater.start_polling()
