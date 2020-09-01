@@ -46,12 +46,11 @@ def button(update, context):
     # CallbackQueries need to be answered, even if no notification to the user is needed
     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
     query.answer()
-
     query.edit_message_text(text="Selected option: {}".format(query.data))
-    if(query.data=='CCT'):
-        file="source/CCT.pdf"
-    # # send the pdf doc
-        context.bot.sendDocument(chat_id=query.message.chat.id, document=open(file, 'rb'))
+    path="https://github.com/timothylam1228/telegram_bot/raw/master/source/"
+    file=str(query.data)
+    pdf=".pdf"
+    context.bot.sendDocument(chat_id=query.message.chat.id, document=path+file+pdf)
 
 def question(update, context):
     if(update.message.text)== 'Question':
@@ -89,10 +88,9 @@ def source(update, context):
     keyboard = [[InlineKeyboardButton("CCT", callback_data='CCT'),
                  InlineKeyboardButton("Linear", callback_data='2')],
 
-                [InlineKeyboardButton("Option 3", callback_data='3')]]
+                [InlineKeyboardButton("Calculus review", callback_data='Calculus review')]]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-
     update.message.reply_text('Please choose:', reply_markup=reply_markup)
     # file="source/CCT.pdf"
     # # send the pdf doc
