@@ -51,6 +51,7 @@ def button(update, context):
     file=str(query.data)
     pdf=".pdf"
     context.bot.sendDocument(chat_id=query.message.chat.id, document=path+file+pdf)
+    if()
 
 def question(update, context):
     if(update.message.text)== 'Question':
@@ -79,10 +80,16 @@ def echo(update, context):
 
 def source(update, context):
     keyboard = [
-                [InlineKeyboardButton("CCT", callback_data='CCT'),
-                 InlineKeyboardButton("Diagnostic Test", callback_data='Diagnostic Test')],
+                [InlineKeyboardButton("Calculus Final Reminder", callback_data='Calculus Final Reminder'),
+                 InlineKeyboardButton("Calculus and Linear Final Review", callback_data='Calculus and Linear Final Review')],
                 [InlineKeyboardButton("Calculus review", callback_data='Calculus review'),
-                 InlineKeyboardButton("Diagnostic Test", callback_data='Diagnostic Test')],
+                 InlineKeyboardButton("Calculus_Ch1_exercise", callback_data='Calculus_Ch1_exercise')],
+                  [InlineKeyboardButton("Maths Diagnostic Test.pdf", callback_data='Maths Diagnostic Test.pdf'),
+                 InlineKeyboardButton("Module 1 and 2 exercise", callback_data='Module 1 and 2 exercise')],
+                  [InlineKeyboardButton("Stat", callback_data='Stat'),
+                 InlineKeyboardButton("Programming Final Reminder", callback_data='Programming Final Reminder.pdf')],
+                  [InlineKeyboardButton("Applied Computing", callback_data='Applied Computing'),
+                 InlineKeyboardButton("CCT", callback_data='CCT')],
                 ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
