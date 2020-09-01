@@ -78,9 +78,12 @@ def echo(update, context):
             context.bot.sendMessage(chat_id=update.message.chat.id,text =  str(update.message.from_user.first_name) + ' Dont say dllm plz, you speaked '+str(TEMP)+' times ' )
 
 def source(update, context):
-    keyboard = [[InlineKeyboardButton("CCT", callback_data='CCT'),
+    keyboard = [
+                [InlineKeyboardButton("CCT", callback_data='CCT'),
                  InlineKeyboardButton("Diagnostic Test", callback_data='Diagnostic Test')],
-                [InlineKeyboardButton("Calculus review", callback_data='Calculus review')]]
+                [InlineKeyboardButton("Calculus review", callback_data='Calculus review'),
+                 InlineKeyboardButton("Diagnostic Test", callback_data='Diagnostic Test')],
+                ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text('Please choose:', reply_markup=reply_markup)
@@ -106,10 +109,8 @@ def open_bot(update, context):
     keyboard = InlineKeyboardMarkup.from_button(
         InlineKeyboardButton(text='Private Chat with bot here!', url=url)
     )
-
     context.bot.sendMessage(chat_id=update.message.chat.id,text ="        Hello",reply_markup=keyboard)
     
-
 
 def main():
     global update_id
@@ -122,7 +123,6 @@ def main():
  
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
-    
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start,filters=~Filters.group))
     dp.add_handler(CommandHandler("help",help_command))
