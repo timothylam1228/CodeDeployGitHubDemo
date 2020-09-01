@@ -22,19 +22,18 @@ from telegram.utils import helpers
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
-
+    
 logger = logging.getLogger(__name__)
 REQUEST, PHOTO, LOCATION, BIO = range(4)
 CHECK_THIS_OUT = 'check-this-out'
 USING_ENTITIES = 'using-entities-here'
 SO_COOL = 'so-cool'
-
+TEMP = 0
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
 def start(update, context):
     """Send a message when the command /start is issued."""
-    update.message.reply_text('here is the source link :'+
-        'https://connectpolyu-my.sharepoint.com/:f:/g/personal/18022038d_connect_polyu_hk/EoftV3mXfn9Em_HTMLRGWwkBIJHySPhJrKfn237Z5T3rtA?e=sggDys')
+    update.message.reply_text('Testing')
 
 
 def help_command(update, context):
@@ -64,8 +63,7 @@ def cancel(update, context):
 
 def echo(update, context):
     """Echo the user message."""
-    temp = 0
-    temp = random.randint(1, 2)
+    
     # update.message.reply_text(update.message.text)
     if((update.message.text).lower()  == 'girl'):
         update.message.reply_text('Fake girl detected')
@@ -73,10 +71,15 @@ def echo(update, context):
     elif((update.message.text).lower() == 'boy'):
         update.message.reply_text('Gay not allow here sorry')
     elif((update.message.text).lower() == 'dllm'):
-        if(temp == 1):
-            update.message.reply_text('DLLM!')
-        else:
-            update.message.reply_text('你好!')
+        #context.bot.delete_message(update.message.message_id,update.message)
+        context.bot.deleteMessage(chat_id=update.message.chat.id, message_id=update.message.message_id)
+        global TEMP
+        TEMP = TEMP + 1
+        if(TEMP%5==0):
+            context.bot.sendMessage(chat_id=update.message.chat.id,text = 'Dont say dllm plz, you speaked '+str(TEMP)+' times ' + str(update.message.from_user.username))
+
+
+      
     
 def newmember(update, context):
     """Send a message when the command /help is issued."""
@@ -90,7 +93,8 @@ def newmember(update, context):
     
 def main():
     global update_id
-
+    
+    
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
