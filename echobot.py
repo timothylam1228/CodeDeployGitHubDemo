@@ -15,39 +15,52 @@ bot.
 import logging
 import random
 import telegram
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from telegram import Dice, InlineQuery , ReplyKeyboardMarkup, ReplyKeyboardRemove, MessageEntity
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
+from telegram import InlineQuery , ReplyKeyboardMarkup, ReplyKeyboardRemove, MessageEntity, ForceReply, InlineKeyboardButton,InlineKeyboardMarkup
+from telegram.utils import helpers
+
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-
+REQUEST, PHOTO, LOCATION, BIO = range(4)
+CHECK_THIS_OUT = 'check-this-out'
+USING_ENTITIES = 'using-entities-here'
+SO_COOL = 'so-cool'
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
 def start(update, context):
     """Send a message when the command /start is issued."""
-    update.message.reply_text('DLLM!')
+    update.message.reply_text('here is the source link :'+
+        'https://connectpolyu-my.sharepoint.com/:f:/g/personal/18022038d_connect_polyu_hk/EoftV3mXfn9Em_HTMLRGWwkBIJHySPhJrKfn237Z5T3rtA?e=sggDys')
 
 
 def help_command(update, context):
 
-    bot = telegram.Bot('1357264168:AAGkNtefPbg4mO-f7j4lxsrN1-sk_TaVVRw')
-    try:
-        update_id = bot.get_updates()[0].update_id
-    except IndexError:
-        update_id = 123
-
     """Send a message when the command /help is issued."""
-    reply_keyboard = [['First','Second']]
-
+    reply_keyboard = [['Source','Question']]
     update.message.reply_text(
-        'Send nude first. '
-        'Send /cancel to stop talking to me.\n\n'
-        'Are you a boy or a girl?',
+        'What can i help u?',
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True))
+    return REQUEST
 
+
+def question(update, context):
+    if(update.message.text)== 'Question':
+        update.message.reply_text('No Question are allowed',reply_markup=ReplyKeyboardRemove())
+    elif(update.message.text)== 'Source':
+        update.message.reply_text('No Source ar dllm',reply_markup=ReplyKeyboardRemove())
+    # if ((update.message.text).lower()  == 'Source'):
+    return ConversationHandler.END
+
+
+def cancel(update, context):
+    update.message.reply_text('Bye!',
+                              reply_markup=ReplyKeyboardRemove())
+
+    return ConversationHandler.END
 
 def echo(update, context):
     """Echo the user message."""
@@ -67,11 +80,14 @@ def echo(update, context):
     
 def newmember(update, context):
     """Send a message when the command /help is issued."""
-    update.message.reply_text('歡迎來到N號房 ')
+    bot = context.bot
+    url = helpers.create_deep_linked_url(bot.get_me().username, SO_COOL)
+    text = "歡迎來到IT谷" 
+    keyboard = InlineKeyboardMarkup.from_button(
+        InlineKeyboardButton(text='Continue here!', url=url)
+    )
+    update.message.reply_text(text, reply_markup=keyboard)
     
-    
-
-
 def main():
     global update_id
 
@@ -79,17 +95,28 @@ def main():
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
-    updater = Updater("1357264168:AAGkNtefPbg4mO-f7j4lxsrN1-sk_TaVVRw", use_context=True)
-    global update_id
-
+    updater = Updater("1357264168:AAF-SEACMXD6DM9dBqvUV0NFySXVb5isb5s", use_context=True)
+ 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
 
     # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("help", help_command))
-  
+    dp.add_handler(CommandHandler("start", start,filters=~Filters.group))
+    
+    '''
+    conv_handler = ConversationHandler(
+        entry_points=[CommandHandler('help', help_command)],
+
+        states={
+            REQUEST: [MessageHandler(Filters.regex('^(Source|Question)$'), question)]
+            
+        },
+        fallbacks=[CommandHandler('cancel', cancel)]
+    )
+
+    dp.add_handler(conv_handler)
+    '''
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
     dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, newmember))
