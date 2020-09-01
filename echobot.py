@@ -69,7 +69,6 @@ def cancel(update, context):
 
 def echo(update, context):
     """Echo the user message."""
-    
     if((update.message.text).lower() == 'dllm'):
         #context.bot.delete_message(update.message.message_id,update.message)
         context.bot.deleteMessage(chat_id=update.message.chat.id, message_id=update.message.message_id)
@@ -81,7 +80,6 @@ def echo(update, context):
 def source(update, context):
     keyboard = [[InlineKeyboardButton("CCT", callback_data='CCT'),
                  InlineKeyboardButton("Diagnostic Test", callback_data='Diagnostic Test')],
-
                 [InlineKeyboardButton("Calculus review", callback_data='Calculus review')]]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -100,8 +98,17 @@ def newmember(update, context):
         InlineKeyboardButton(text='Continue here!', url=url)
     )
     update.message.reply_text(text, reply_markup=keyboard)
-    
 
+def open_bot(update, context):
+    
+    bot = context.bot
+    url = helpers.create_deep_linked_url(bot.get_me().username, SO_COOL)
+    keyboard = InlineKeyboardMarkup.from_button(
+        InlineKeyboardButton(text='Private Chat with bot here!', url=url)
+    )
+
+    context.bot.sendMessage(chat_id=update.message.chat.id,text ="        Hello",reply_markup=keyboard)
+    
 
 
 def main():
@@ -115,10 +122,11 @@ def main():
  
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
-
+    
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start,filters=~Filters.group))
     dp.add_handler(CommandHandler("help",help_command))
+    dp.add_handler(CommandHandler("open_bot", open_bot,filters=Filters.group))
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
