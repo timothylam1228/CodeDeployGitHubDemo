@@ -1,4 +1,6 @@
 
+#<code># coding=UTF-8<code>
+
 """
 Simple Bot to reply to Telegram messages.
 
@@ -11,7 +13,7 @@ Basic Echobot example, repeats messages.
 Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
-
+import json
 import logging
 import random
 import telegram
@@ -137,7 +139,7 @@ def main():
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
-    updater = Updater("1357264168:AAF-SEACMXD6DM9dBqvUV0NFySXVb5isb5s", use_context=True)
+    updater = Updater("1357264168:AAFjKsDhehdtld5zKxyQ7rnpApR5-ZS0Z9A", use_context=True)
  
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
