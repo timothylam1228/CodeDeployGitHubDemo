@@ -1,11 +1,9 @@
 version: 0.2
 
 phases:
-    install:
-        - pip install python-telegram-bot --upgrade
   pre_build:
     commands:
-        - python -V
+        - pip install python-telegram-bot --upgrade
   build:
     commands:
         - python -V
