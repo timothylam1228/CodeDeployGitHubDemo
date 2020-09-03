@@ -1,6 +1,4 @@
 
-#<code># coding=UTF-8<code>
-
 """
 Simple Bot to reply to Telegram messages.
 
@@ -13,13 +11,15 @@ Basic Echobot example, repeats messages.
 Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
-import json
+
 import logging
 import random
 import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 from telegram import InlineQuery , ReplyKeyboardMarkup, ReplyKeyboardRemove, MessageEntity, ForceReply, InlineKeyboardButton,InlineKeyboardMarkup
 from telegram.utils import helpers
+import datetime
+
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -78,8 +78,9 @@ def cancel(update, context):
 def echo(update, context):
     """Echo the user message."""
     x = update.message.from_user.id
+    print(x)
     if(x == 197183803):
-      update.message.reply_text(chat_id=update.message.chat.id, text = "dllm")
+        update.message.reply_text('DLLM')
     # if((update.message.text).lower() == 'dllm'):
         
         #context.bot.delete_message(update.message.message_id,update.message)
@@ -91,15 +92,15 @@ def echo(update, context):
 
 def source(update, context):
     keyboard = [
-                [InlineKeyboardButton("Calculus Final Reminder", callback_data='Calculus Final Reminder'),
-                 InlineKeyboardButton("Calculus and Linear Final Review", callback_data='Calculus and Linear Final Review')],
-                [InlineKeyboardButton("Calculus review", callback_data='Calculus review'),
-                 InlineKeyboardButton("Calculus_Ch1_exercise", callback_data='Calculus_Ch1_exercise')],
-                  [InlineKeyboardButton("Maths Diagnostic Test", callback_data='Maths Diagnostic Test'),
-                 InlineKeyboardButton("Module 1 and 2 exercise", callback_data='Module 1 and 2 exercise')],
-                  [InlineKeyboardButton("Stat", callback_data='Stat'),
-                 InlineKeyboardButton("Programming Final Reminder", callback_data='Programming Final Reminder')],
+                [InlineKeyboardButton("Calculus Final Reminder", callback_data='Calculus Final Reminder')],
+                 [InlineKeyboardButton("Calculus and Linear Final Review", callback_data='Calculus and Linear Final Review')],
+                [InlineKeyboardButton("Calculus review", callback_data='Calculus review')],
+                 [InlineKeyboardButton("Calculus_Ch1_exercise", callback_data='Calculus_Ch1_exercise')],
+                  [InlineKeyboardButton("Maths Diagnostic Test", callback_data='Maths Diagnostic Test')],
+                 [InlineKeyboardButton("Module 1 and 2 exercise", callback_data='Module 1 and 2 exercise')],
                   [InlineKeyboardButton("Applied Computing", callback_data='Applied Computing'),
+                 InlineKeyboardButton("Programming Final Reminder", callback_data='Programming Final Reminder')],
+                  [InlineKeyboardButton("Stat", callback_data='Stat'),
                  InlineKeyboardButton("CCT", callback_data='CCT')],
                 ]
 
@@ -132,6 +133,16 @@ def open_bot(update, context):
     #context.bot.sendMessage(chat_id=update.message.chat.id,text ="        Hello",reply_markup=keyboard)
     update.message.reply_text("Hello", reply_markup=keyboard)
 
+def open_day(update, context):
+    x = datetime.datetime.now()
+    delta = datetime.datetime(2020, 9, 7) - datetime.datetime.now()
+    count = (delta.total_seconds())
+    days = int(count//86400)
+    hours = int((count-days*86400)//3600)
+    minutes = int((count-days*86400-hours*3600)//60)
+    seconds = int(count-days*86400-hours*3600-minutes*60)
+    update.message.reply_text("距離開學仲有"+str(days)+"日 "+str(hours)+"小時 "+str(minutes) +"分 " + str(seconds) + "秒")
+
 def main():
     global update_id
     
@@ -139,17 +150,21 @@ def main():
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
-    updater = Updater("1357264168:AAFjKsDhehdtld5zKxyQ7rnpApR5-ZS0Z9A", use_context=True)
+    # Welcome 1357264168:AAHSA6t5WsWkZ3pl4B8-z8CWcaneZUJpw-Q
+    #
+    updater = Updater("1274514043:AAGusVpMUbN8vn8Jy-qWMmoc3GJXUszi13k", use_context=True)
  
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start,filters=~Filters.group))
     dp.add_handler(CommandHandler("help",help_command))
-    dp.add_handler(CommandHandler("open_bot", open_bot,filters=Filters.group))
+    dp.add_handler(CommandHandler("openbot", open_bot,filters=Filters.group))
+    dp.add_handler(CommandHandler("openday",open_day))
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
     # on noncommand i.e message - echo the message on Telegram
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.command &Filters.sticker, echo))
+    #dp.add_handler(MessageHandler(Filters.text & ~Filters.command , echo))
+    #dp.add_handler(MessageHandler(Filters.sticker, echo))
     dp.add_handler(CommandHandler("Source", source,filters=~Filters.group))
     dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, newmember))
     # Start the Bot
@@ -164,3 +179,10 @@ def main():
 if __name__ == '__main__':
     
     main()
+
+
+
+'''
+openbot - open the bot
+openday - remaining time b4 hell
+'''
